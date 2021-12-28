@@ -1,42 +1,47 @@
-import React, { FC, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, StatusBar, Text, View, Dimensions } from 'react-native';
 import LoginScreen from './components/LoginPage/LoginScreen';
-import UserDataPage from "./components/UserDataPage/UserDataPage";
+import Hub from "./components/Hub/Hub";
+import { BackgroundColor } from './components/Grundsachen/Colors';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 interface Props {
 
 }
 
-const App:FC<Props> = (Props):JSX.Element => {
-  const [isLogin, setLogin] = useState<boolean>(false);
+const App: FC<Props> = (Props): JSX.Element => {
+  const [isLogin, setLogin] = useState<boolean>(true);
   const [token, setToken] = useState<string>("");
 
+  useEffect(() => {
+    AsyncStorage.setItem("token", "sheeesh");
+    AsyncStorage.getItem("token").then(value => {
+      setToken((value) ? value : "");
+      setLogin(token ? true : false)
+    })
+  }, [])
 
   return (
-    <SafeAreaView style={styles.mainView}>
-      {!isLogin && <LoginScreen isLogin={isLogin} setLogin={setLogin} token={token} setToken={setToken}></LoginScreen>}
-      {isLogin && (
-        <UserDataPage token={token} goBack={() => {}}></UserDataPage>
-      )}
+    <SafeAreaView style={{ marginTop: StatusBar.currentHeight }}>
+      <View style={styles.mainView}>
+        {!isLogin && <LoginScreen isLogin={isLogin} setLogin={setLogin} token={token} setToken={setToken}></LoginScreen>}
+
+        {isLogin && <Hub></Hub>}
+      </View>
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   mainView: {
-    marginTop: StatusBar.currentHeight, 
-    height: "100%", 
-    display: 'flex', 
+    height: "100%",
+    width: "100%",
+
+    display: 'flex',
     justifyContent: "center",
-    backgroundColor: "#F5F5F5",
-    overflow: "hidden"
-  },
-  text: {
-    color: "black", 
-    fontSize: 50, 
-    justifyContent: "center", 
-    textAlign: "center"
-  },
+    backgroundColor: BackgroundColor,
+  }
 });
 
 export default App;

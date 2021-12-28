@@ -1,29 +1,30 @@
 import React from "react";
-import {Text, Image, StyleSheet, TouchableOpacity, ProgressViewIOSComponent} from "react-native";
+import { Text, Image, StyleSheet, TouchableOpacity, ProgressViewIOSComponent } from "react-native";
 import CredentialsSite from "../CredentialsSite/CredentialsSite";
+import { ContrastColor, Schriftfarbe, WeißerAkzentAufWeiß } from "../Grundsachen/Colors";
 
 interface Props {
     loginText: string,
     logoPath: any,
     isLogin: boolean,
-    setLoginPage: (Site:JSX.Element|undefined) => void,
+    setLoginPage: (Site: JSX.Element | undefined) => void,
     setLogin: (newVal: boolean) => void,
 
     token: string,
     setToken: (token: string) => void,
 }
 
-const LoginButton:React.FC<Props> = (Props):JSX.Element => {
+const LoginButton: React.FC<Props> = (Props): JSX.Element => {
     const logoPath = Props.logoPath;
 
     if (Props.isLogin) {
         Props.setLoginPage(
-            <CredentialsSite 
-                reset={Props.setLoginPage} 
-                settoken={Props.setToken} 
-                token={Props.token} 
-                setLogin={Props.setLogin} 
-                Logo={Props.logoPath} 
+            <CredentialsSite
+                reset={Props.setLoginPage}
+                settoken={Props.setToken}
+                token={Props.token}
+                setLogin={Props.setLogin}
+                Logo={Props.logoPath}
                 Text={Props.loginText}>
             </CredentialsSite>
         )
@@ -31,15 +32,15 @@ const LoginButton:React.FC<Props> = (Props):JSX.Element => {
 
     return (
         <TouchableOpacity style={style.button} onPress={() => Props.setLoginPage(
-                <CredentialsSite 
-                    reset={Props.setLoginPage} 
-                    settoken={Props.setToken} 
-                    token={Props.token} 
-                    setLogin={Props.setLogin} 
-                    Logo={Props.logoPath} 
-                    Text={Props.loginText}>
-                </CredentialsSite>
-            )}>
+            <CredentialsSite
+                reset={Props.setLoginPage}
+                settoken={Props.setToken}
+                token={Props.token}
+                setLogin={Props.setLogin}
+                Logo={Props.logoPath}
+                Text={Props.loginText}>
+            </CredentialsSite>
+        )}>
             <Image source={Props.logoPath} style={style.image}></Image>
             <Text style={style.text}>{Props.loginText}</Text>
         </TouchableOpacity>
@@ -58,15 +59,13 @@ const style = StyleSheet.create({
         padding: 50,
         paddingTop: 10,
         paddingBottom: 10,
-        backgroundColor: "#ffffff",
+        backgroundColor: WeißerAkzentAufWeiß,
         borderRadius: 10,
         marginBottom: 10,
-
-        shadowColor: "#F5F5F5",
     },
     image: {
         height: 35,
-        width: 35, 
+        width: 35,
     },
     text: {
         fontSize: 17,
@@ -75,6 +74,7 @@ const style = StyleSheet.create({
         textAlignVertical: "center",
         flexGrow: 1,
         textAlign: "center",
+        color: Schriftfarbe,
 
         marginLeft: 10,
     }

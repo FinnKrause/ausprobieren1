@@ -16,6 +16,7 @@
     },
     "android": {
       "package": "com.finnkrause.adminpanel"
+      
     },
     "web": {},
     "description": ""
