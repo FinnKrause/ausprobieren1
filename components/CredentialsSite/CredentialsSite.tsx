@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, Button, Image, Text, TouchableOpacity } from "react-native";
 import { CheckBox } from "react-native-elements/dist/checkbox/CheckBox";
-import { ContrastColor, SchriftAufKontrast, Schriftfarbe, BackgroundColor, AlertColor } from "../Grundsachen/Colors";
+import { ContrastColor, SchriftAufKontrast, Schriftfarbe, BackgroundColor, AlertColor, PlaceHolderColor } from "../Grundsachen/Colors";
 import ReturnButton from "../returnButton/returnButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -33,7 +33,7 @@ const CredentialsSite: React.FC<Props> = (Props) => {
             if (data.valid && data.token) {
                 Props.setLogin(true);
                 Props.settoken(data.token);
-                if (keep) AsyncStorage.setItem("token", data).then(value => console.log("Set token to: " + value));
+                if (keep) AsyncStorage.setItem("token", data.token).then(value => console.log("Set token to: " + value));
                 setErr(false);
             } else {
                 setErr(true);
@@ -54,18 +54,25 @@ const CredentialsSite: React.FC<Props> = (Props) => {
 
                 <View style={style.inputFieldWrapper}>
                     <Image style={{ height: 20, width: 20, marginRight: 10 }} source={require("../../assets/user.png")}></Image>
-                    <TextInput style={style.input} placeholder="Username" onChangeText={e => setCUsername(e)} textContentType="username"></TextInput>
+                    <TextInput style={style.input} placeholder="Username" placeholderTextColor={PlaceHolderColor} onChangeText={e => setCUsername(e)} textContentType="username"></TextInput>
                 </View>
 
                 <View style={style.inputFieldWrapper}>
                     <Image style={{ height: 20, width: 20, marginRight: 10 }} source={require("../../assets/key.png")}></Image>
-                    <TextInput style={style.input} placeholder="Password" onChangeText={e => setCPassword(e)} textContentType="password" secureTextEntry={true}></TextInput>
+                    <TextInput style={style.input} placeholder="Password" placeholderTextColor={PlaceHolderColor} onChangeText={e => setCPassword(e)} textContentType="password" secureTextEntry={true}></TextInput>
                 </View>
 
                 {hasErr && <Text style={{ color: AlertColor, fontWeight: "700" }}>Username oder Passwort sind falsch!</Text>}
 
                 <View style={style.checkboxView}>
-                    <CheckBox title={"Keep me signed in"} style={{ backgroundColor: BackgroundColor }} onPress={() => setkeep(!keep)} checked={keep} checkedColor={ContrastColor} />
+                    <CheckBox
+                        title={"Keep me signed in"}
+                        onPress={() => setkeep(!keep)}
+                        checked={keep}
+                        checkedColor={ContrastColor}
+                        containerStyle={{ backgroundColor: "transparent", borderWidth: 0 }}
+                        textStyle={{ color: Schriftfarbe }}
+                    />
                 </View>
 
                 <TouchableOpacity style={style.button} onPress={() => { TryLogin() }}>
@@ -80,8 +87,6 @@ const CredentialsSite: React.FC<Props> = (Props) => {
 const style = StyleSheet.create({
     checkboxView: {
         display: "flex",
-        flexDirection: "row",
-
         width: "70%",
 
         marginBottom: 20,
@@ -142,6 +147,7 @@ const style = StyleSheet.create({
     input: {
         height: 40,
         flexGrow: 1,
+        color: Schriftfarbe
     },
     button: {
         width: "80%",

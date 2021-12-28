@@ -18,7 +18,7 @@ const LoginScreen: React.FC<Props> = (Props): JSX.Element => {
 
     return (
         <View style={style.headerView} key={1}>
-            {!LoginDetailsSite && !Props.isLogin && <View style={style.loginViewWrapper}>
+            {!LoginDetailsSite && <View style={style.loginViewWrapper}>
                 <Image style={style.adminpanelImage} source={require("../../assets/admin_panel.png")}></Image>
                 <LoginButton
                     loginText="Login with Apple"
