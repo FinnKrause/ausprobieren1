@@ -6,7 +6,7 @@ import Kachel from "./Kachel";
 import ReturnButton from "../returnButton/returnButton";
 
 interface Props {
-
+    removeLogin: () => void
 }
 
 interface Kachel {
@@ -22,6 +22,9 @@ const Hub: React.FC<Props> = (Props): JSX.Element => {
     const Kacheln: Kachel[] = [
         { text: "User Data", image: require("../../assets/data.png"), onClick: () => setTopLayer(<UserDataPage goBack={() => { setTopLayer(undefined) }}></UserDataPage>) },
         { text: "Admin Web Page", image: require("../../assets/admin.png"), onClick: () => { } }, //Linking.openURL("https://finnkrause.com/?Sprachentable=true&h=secret&p=jsonwebtoken4finn").catch(err => alert(err)) 
+        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
+        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
+        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
         { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
     ]
 

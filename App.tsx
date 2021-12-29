@@ -15,19 +15,21 @@ const App: FC<Props> = (Props): JSX.Element => {
   const [token, setToken] = useState<string>("");
   const [loading, setloading] = useState<boolean>(true);
 
-  AsyncStorage.getItem("token").then(value => {
-    //console.log("Got this token at Startup: " + value)
-    setToken((value) ? value : "");
+  useEffect(() => {
+    AsyncStorage.getItem("token").then(value => {
+      //console.log("Got this token at Startup: " + value)
+      setToken((value) ? value : "");
 
-    //console.log("This is the Current token in state: " + token)
-    setLogin(token ? true : false)
+      //console.log("This is the Current token in state: " + token)
+      setLogin(token ? true : false)
 
-    // console.log("Is Logged in at Startup: " + isLogin)
+      // console.log("Is Logged in at Startup: " + isLogin)
 
-    setTimeout(() => {
-      setloading(false);
-    }, 1000)
-  })
+      setTimeout(() => {
+        setloading(false);
+      }, 1000)
+    })
+  }, [])
 
   return (
     <SafeAreaView style={{ marginTop: StatusBar.currentHeight, backgroundColor: BackgroundColor, overflow: "hidden" }}>
@@ -36,7 +38,7 @@ const App: FC<Props> = (Props): JSX.Element => {
       </View>}
       {!loading && <View style={styles.mainView}>
         {!isLogin && <LoginScreen isLogin={isLogin} setLogin={setLogin} token={token} setToken={setToken}></LoginScreen>}
-        {isLogin && <Hub></Hub>}
+        {isLogin && <Hub removeLogin={() => { AsyncStorage.setItem("token", ""); setLogin(false); setToken(""); }}></Hub>}
       </View>}
     </SafeAreaView>
   )

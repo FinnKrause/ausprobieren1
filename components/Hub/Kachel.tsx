@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image, TouchableNativeFeedbackBase } from "react-native";
+import { TouchableRipple } from "react-native-paper";
 import { ContrastColor, SchriftAufKontrast, DarkerContrast, SecoundContrast, SchriftAufSecoundContrast, DarkerSecoundContrast } from "../Grundsachen/Colors";
 
 interface Props {
@@ -10,14 +11,14 @@ interface Props {
 
 const Kachel: React.FC<Props> = (Props): JSX.Element => {
     return (
-        <TouchableOpacity style={styles.KachelBody} onPress={Props.onClick}>
+        <View style={styles.KachelBody}>
             <View style={styles.top}>
                 <Image source={Props.image} style={styles.image}></Image>
             </View>
-            <View style={styles.bottom}>
+            <TouchableRipple style={styles.bottom} onPress={Props.onClick}>
                 <Text style={styles.Text}>{Props.text}</Text>
-            </View>
-        </TouchableOpacity>
+            </TouchableRipple>
+        </View>
     );
 }
 
@@ -48,7 +49,11 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 20,
     },
     bottom: {
-
+        width: "100%",
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        alignItems: "center",
+        backgroundColor: ContrastColor
     },
     image: {
         maxHeight: 120,

@@ -33,7 +33,11 @@ const CredentialsSite: React.FC<Props> = (Props) => {
             if (data.valid && data.token) {
                 Props.setLogin(true);
                 Props.settoken(data.token);
-                if (keep) AsyncStorage.setItem("token", data.token).then(value => console.log("Set token to: " + value));
+
+                setTimeout(() => {
+                    if (keep) AsyncStorage.setItem("token", data.token);
+                }, 100)
+
                 setErr(false);
             } else {
                 setErr(true);
