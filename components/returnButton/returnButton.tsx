@@ -1,10 +1,10 @@
 import React from "react";
-import { TouchableOpacity, Image } from "react-native";
+import { TouchableOpacity, Image, StyleProp, ViewStyle } from "react-native";
 
 interface Props {
     onReturnButtonPress: () => void;
     isAbsolute: boolean;
-    customStyle?: {};
+    customStyle?: StyleProp<ViewStyle>;
 }
 
 const returnButton: React.FC<Props> = (Props) => {

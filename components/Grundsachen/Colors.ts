@@ -1,6 +1,16 @@
-const BackgroundColor: string = "#252627"; //#F5F5F5
-const ContrastToBackgroundColor: string = "#151617"; //#ffffff
-const PlaceHolderColor: string = "#61707C" // #DAE1E7
+let isDarkMode:boolean = true;
+
+function gc(lightModeColor:string, DarkModeColor:string):string {
+  return isDarkMode ? DarkModeColor : lightModeColor;
+}
+
+const changeMode = () => {
+  isDarkMode = !isDarkMode;
+}
+
+const BackgroundColor: string = gc("#F5F5F5", "#151617"); 
+const SecoundBackground: string = gc("#ffffff","#252627");
+const PlaceHolderColor: string = gc("#61707C", "#DAE1E7");
 
 const ContrastColor: string = "#186DB6";
 const DarkerContrast: string = "#061729";
@@ -10,14 +20,16 @@ const SecoundContrast:string = "#FF9248";
 const DarkerSecoundContrast: string = "#FF6700";
 const SchriftAufSecoundContrast:string = "#ffffff";
 
-const Schriftfarbe: string = "#ffffff"; //#000000
-
+const Schriftfarbe: string = isDarkMode ? "#ffffff" : "#000000";
 
 const AlertColor: string = "#ff0000";
 
+
+export default changeMode;
+
 export {
   BackgroundColor,
-  ContrastToBackgroundColor,
+  SecoundBackground,
   PlaceHolderColor,
   
   ContrastColor,

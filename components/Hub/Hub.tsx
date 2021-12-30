@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { BackgroundColor, ContrastColor, ContrastToBackgroundColor, SchriftAufKontrast, Schriftfarbe } from "../Grundsachen/Colors";
+import { BackgroundColor, ContrastColor, SecoundBackground, SchriftAufKontrast, Schriftfarbe } from "../Grundsachen/Colors";
 import { View, Text, Button, StyleSheet, Image, ScrollView, Linking, TouchableOpacity } from "react-native";
 import UserDataPage from "../UserDataPage/UserDataPage";
 import Kachel from "./Kachel";
-import ReturnButton from "../returnButton/returnButton";
+import ClickOnProfilePicture from "../Menu/ClickOnProfilePicture";
 
 interface Props {
     removeLogin: () => void
@@ -18,7 +18,7 @@ interface Kachel {
 const Hub: React.FC<Props> = (Props): JSX.Element => {
 
     const [topLayer, setTopLayer] = useState<JSX.Element | undefined>();
-    const [setting, setSettings] = useState<boolean>();
+    const [ProfilePictureClicked, setProfilePictureClicked] = useState<boolean>();
     const Kacheln: Kachel[] = [
         { text: "User Data", image: require("../../assets/data.png"), onClick: () => setTopLayer(<UserDataPage goBack={() => { setTopLayer(undefined) }}></UserDataPage>) },
         { text: "Admin Web Page", image: require("../../assets/admin.png"), onClick: () => { } }, //Linking.openURL("https://finnkrause.com/?Sprachentable=true&h=secret&p=jsonwebtoken4finn").catch(err => alert(err)) 
@@ -32,19 +32,11 @@ const Hub: React.FC<Props> = (Props): JSX.Element => {
         <View style={styles.HubWrapper}>
             {topLayer && <View>{topLayer}</View>}
 
-            {setting && <View style={sstyle.body}>
-                <ReturnButton isAbsolute={false} onReturnButtonPress={() => setSettings(false)}></ReturnButton>
-                <TouchableOpacity>
-                    <Text style={sstyle.text}>Settings</Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Text style={sstyle.text}>Logout</Text>
-                </TouchableOpacity>
-            </View>}
+            {ProfilePictureClicked && <ClickOnProfilePicture removeLogin={Props.removeLogin} setSettings={setProfilePictureClicked} />}
 
             {!topLayer && <View style={styles.HubWrapper}>
                 <View style={styles.TopBar}>
-                    <TouchableOpacity onPress={() => setSettings(true)}>
+                    <TouchableOpacity onPress={() => setProfilePictureClicked(true)}>
                         <Image source={require("../../assets/Finn.jpg")} style={styles.ProfilePicture}></Image>
                     </TouchableOpacity>
 
@@ -62,26 +54,6 @@ const Hub: React.FC<Props> = (Props): JSX.Element => {
     );
 
 }
-
-const sstyle = StyleSheet.create({
-    body: {
-        position: "absolute",
-        backgroundColor: ContrastToBackgroundColor,
-        borderRadius: 20,
-        zIndex: 10,
-
-        width: "90%",
-        maxWidth: 800,
-        height: "90%",
-        maxHeight: 700,
-
-        alignSelf: "center",
-        bottom: 1,
-    },
-    text: {
-        color: Schriftfarbe
-    },
-});
 
 const styles = StyleSheet.create({
     HubWrapper: {

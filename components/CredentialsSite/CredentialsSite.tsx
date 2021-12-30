@@ -29,6 +29,11 @@ const CredentialsSite: React.FC<Props> = (Props) => {
             return;
         }
 
+        if (!setErr || !setkeep || !Props.setLogin || !Props.settoken) {
+            TryLogin();
+            return;
+        }
+
         fetch(`https://api.finnkrause.com/login/${currentUsername}/${currentPassword}`).then(response => response.json()).then(data => {
             if (data.valid && data.token) {
                 Props.setLogin(true);

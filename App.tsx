@@ -1,9 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, View, Dimensions, Button } from 'react-native';
 import LoginScreen from './components/LoginPage/LoginScreen';
 import Hub from "./components/Hub/Hub";
 import { BackgroundColor } from './components/Grundsachen/Colors';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BaseNavigationContainer } from "@react-navigation/native"
+
 
 
 interface Props {
@@ -13,21 +15,19 @@ interface Props {
 const App: FC<Props> = (Props): JSX.Element => {
   const [isLogin, setLogin] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
-  const [loading, setloading] = useState<boolean>(true);
+  const [loading, setloading] = useState<boolean>(false);
 
   useEffect(() => {
     AsyncStorage.getItem("token").then(value => {
-      //console.log("Got this token at Startup: " + value)
-      setToken((value) ? value : "");
+      try {
+        setToken(value ? value : "");
+        setLogin(value ? true : false)
+        setTimeout(() => {
+          setloading(false);
+        }, 1000)
+      } catch (e: any) {
 
-      //console.log("This is the Current token in state: " + token)
-      setLogin(token ? true : false)
-
-      // console.log("Is Logged in at Startup: " + isLogin)
-
-      setTimeout(() => {
-        setloading(false);
-      }, 1000)
+      }
     })
   }, [])
 
@@ -56,4 +56,5 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
 

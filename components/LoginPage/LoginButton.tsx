@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, Image, StyleSheet, TouchableOpacity, ProgressViewIOSComponent } from "react-native";
 import CredentialsSite from "../CredentialsSite/CredentialsSite";
-import { ContrastColor, ContrastToBackgroundColor, Schriftfarbe } from "../Grundsachen/Colors";
+import { ContrastColor, SecoundBackground, Schriftfarbe } from "../Grundsachen/Colors";
 
 interface Props {
     loginText: string,
@@ -59,7 +59,7 @@ const style = StyleSheet.create({
         padding: 50,
         paddingTop: 10,
         paddingBottom: 10,
-        backgroundColor: ContrastToBackgroundColor,
+        backgroundColor: SecoundBackground,
         borderRadius: 10,
         marginBottom: 10,
     },
