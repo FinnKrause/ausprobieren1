@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet, Image, Dimensions } from "react-native";
-import { SecoundBackground, Schriftfarbe, BackgroundColor, AlertColor } from "../Grundsachen/Colors";
+import changeMode, { SecoundBackground, Schriftfarbe, BackgroundColor, AlertColor } from "../Grundsachen/Colors";
 import ReturnButton from "../returnButton/returnButton";
 import Menubutton from "./Menubutton"
 
@@ -15,7 +15,7 @@ const isBig = Dimensions.get("window").width > 1000;
 const ClickOnProfilePicture: React.FC<Props> = (Props): JSX.Element => {
     return (
         <View style={style.body}>
-            <ReturnButton isAbsolute={true} onReturnButtonPress={() => Props.setSettings(false)}></ReturnButton>
+            <ReturnButton isAbsolute={false} onReturnButtonPress={() => Props.setSettings(false)} customStyle={{ marginTop: 40, marginLeft: 15 }}></ReturnButton>
 
             <View style={style.actualContent}>
                 <View style={style.Top}>
@@ -24,6 +24,7 @@ const ClickOnProfilePicture: React.FC<Props> = (Props): JSX.Element => {
                 </View>
                 <View style={style.Bottom}>
                     <Menubutton onPress={() => { }} text="Settings" />
+
                     <Menubutton onPress={Props.removeLogin} customTextStyle={{ color: AlertColor, fontWeight: "bold", letterSpacing: 4 }} text="LOGOUT" isLast />
                 </View>
             </View>

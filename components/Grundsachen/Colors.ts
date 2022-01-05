@@ -1,3 +1,5 @@
+import { Appearance } from 'react-native';
+
 let isDarkMode:boolean = true;
 
 function gc(lightModeColor:string, DarkModeColor:string):string {

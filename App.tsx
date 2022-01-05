@@ -19,15 +19,21 @@ const App: FC<Props> = (Props): JSX.Element => {
 
   useEffect(() => {
     AsyncStorage.getItem("token").then(value => {
-      try {
-        setToken(value ? value : "");
-        setLogin(value ? true : false)
-        setTimeout(() => {
-          setloading(false);
-        }, 1000)
-      } catch (e: any) {
-
+      if (!value) {
+        setloading(false);
+        return;
       }
+
+      // fetch(`https://api.finnkrause.com/validate:${value}`).then(response => response.text()).then(data => {
+      //   if (data !== "true") {
+      //     setloading(false);
+      //     return;
+      //   }
+      setToken(value ? value : "");
+      setLogin(value ? true : false)
+
+      setloading(false);
+      // })
     })
   }, [])
 
@@ -38,7 +44,7 @@ const App: FC<Props> = (Props): JSX.Element => {
       </View>}
       {!loading && <View style={styles.mainView}>
         {!isLogin && <LoginScreen isLogin={isLogin} setLogin={setLogin} token={token} setToken={setToken}></LoginScreen>}
-        {isLogin && <Hub removeLogin={() => { AsyncStorage.setItem("token", ""); setLogin(false); setToken(""); }}></Hub>}
+        {isLogin && <Hub removeLogin={() => { AsyncStorage.setItem("token", ""); setLogin(false); setToken(""); }} token={token}></Hub>}
       </View>}
     </SafeAreaView>
   )

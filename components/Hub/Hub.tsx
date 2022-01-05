@@ -4,9 +4,12 @@ import { View, Text, Button, StyleSheet, Image, ScrollView, Linking, TouchableOp
 import UserDataPage from "../UserDataPage/UserDataPage";
 import Kachel from "./Kachel";
 import ClickOnProfilePicture from "../Menu/ClickOnProfilePicture";
+import ChoiceSite from "./ChoiceSite";
+import VmSeite from "../VMSeite/VmSeite";
 
 interface Props {
     removeLogin: () => void
+    token: string;
 }
 
 interface Kachel {
@@ -19,14 +22,16 @@ const Hub: React.FC<Props> = (Props): JSX.Element => {
 
     const [topLayer, setTopLayer] = useState<JSX.Element | undefined>();
     const [ProfilePictureClicked, setProfilePictureClicked] = useState<boolean>();
+
     const Kacheln: Kachel[] = [
-        { text: "User Data", image: require("../../assets/data.png"), onClick: () => setTopLayer(<UserDataPage goBack={() => { setTopLayer(undefined) }}></UserDataPage>) },
-        { text: "Admin Web Page", image: require("../../assets/admin.png"), onClick: () => { } }, //Linking.openURL("https://finnkrause.com/?Sprachentable=true&h=secret&p=jsonwebtoken4finn").catch(err => alert(err)) 
-        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
-        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
-        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
-        { text: "Admin Web Page", image: require("../../assets/grafana.png"), onClick: () => { } },
+        { text: "User Data", image: require("../../assets/data.png"), onClick: () => setTopLayer(<UserDataPage goBack={() => { setTopLayer(undefined) }} token={Props.token}></UserDataPage>) },
+        { text: "Admin Web Page", image: require("../../assets/admin.png"), onClick: () => { Linking.openURL("https://finnkrause.com/?Sprachentable=true&h=secret&p=jsonwebtoken4finn").catch(err => alert(err)) } },
+        { text: "VMs", image: require("../../assets/VMs.png"), onClick: () => setTopLayer(<VmSeite setTopLayer={returnToHub}></VmSeite>) },
+        { text: "DNS", image: require("../../assets/DNS.png"), onClick: () => { } },
+        { text: "Performance Monitor", image: require("../../assets/performance.png"), onClick: () => { } },
     ]
+
+    const returnToHub = () => setTopLayer(undefined);
 
     return (
         <View style={styles.HubWrapper}>

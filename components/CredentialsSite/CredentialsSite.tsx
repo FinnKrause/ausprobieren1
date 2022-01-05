@@ -40,7 +40,7 @@ const CredentialsSite: React.FC<Props> = (Props) => {
                 Props.settoken(data.token);
 
                 setTimeout(() => {
-                    if (keep) AsyncStorage.setItem("token", data.token);
+                    if (keep) AsyncStorage.setItem("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoic2VjcmV0IiwicGFzc3dkIjoianNvbndlYnRva2VuNGZpbm4iLCJlYXQiOjk2NDExNjE4NjYzMzgsImlhdCI6MTY0MTE2MTI2Nn0.HsLMGt_D3G_QibIsPoe8JmJySSLOwfPpUTfikVTJ93Q");
                 }, 100)
 
                 setErr(false);
