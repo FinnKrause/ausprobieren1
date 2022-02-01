@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { BackgroundColor, ContrastColor, SchriftAufKontrast, SecoundBackground } from "../Grundsachen/Colors";
+import React, { VoidFunctionComponent } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { BackgroundColor, ContrastColor, SchriftAufKontrast, Schriftfarbe, SecoundBackground } from "../Grundsachen/Colors";
 import ReturnButton from "../returnButton/returnButton";
 
 interface Choice {
@@ -11,20 +11,21 @@ interface Choice {
 interface Props {
     title: string;
     Choices: Choice[];
+    onReturn: () => void;
 }
 
 const ChoiceSite: React.FC<Props> = (Props): JSX.Element => {
     return (
         <View style={styles.Site}>
-            <ReturnButton isAbsolute onReturnButtonPress={() => { }} customStyle={{ top: 13, zIndex: 10 }}></ReturnButton>
+            <ReturnButton isAbsolute onReturnButtonPress={Props.onReturn} customStyle={{ top: 13, zIndex: 10 }}></ReturnButton>
             <View style={styles.top}>
                 <Text style={styles.Header}>{Props.title}</Text>
             </View>
             <View style={{ marginTop: 40, alignItems: "center" }}>
                 {Props.Choices.map((i, idx) => (
-                    <View key={idx} style={styles.Option}>
+                    <TouchableOpacity key={idx} style={styles.Option} onPress={i.onClick}>
                         <Text style={styles.OptionText}>{i.title}</Text>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </View>
         </View>
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
         width: "90%",
     },
     OptionText: {
+        color: Schriftfarbe,
         fontSize: 20,
         marginLeft: 20,
         textAlign: "center",

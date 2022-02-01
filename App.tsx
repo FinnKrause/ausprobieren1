@@ -1,18 +1,27 @@
 import React, { FC, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, View, Dimensions, Button } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, View, Dimensions, Button, TouchableOpacity } from 'react-native';
 import LoginScreen from './components/LoginPage/LoginScreen';
 import Hub from "./components/Hub/Hub";
 import { BackgroundColor } from './components/Grundsachen/Colors';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BaseNavigationContainer } from "@react-navigation/native"
 
-
-
-interface Props {
-
+interface Colors {
+  BackgroundColor: string,
+  SecoundBackground: string,
+  PlaceHolderColor: string,
+  ContrastColor: string,
+  DarkerContrast: string,
+  SchriftAufKontrast: string,
+  SecoundContrast: string,
+  DarkerSecoundContrast: string,
+  SchriftAufSecoundContrast: string,
+  Schriftfarbe: string,
+  AlertColor: string,
 }
 
-const App: FC<Props> = (Props): JSX.Element => {
+
+const App: FC = (): JSX.Element => {
   const [isLogin, setLogin] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
   const [loading, setloading] = useState<boolean>(false);
@@ -23,17 +32,10 @@ const App: FC<Props> = (Props): JSX.Element => {
         setloading(false);
         return;
       }
-
-      // fetch(`https://api.finnkrause.com/validate:${value}`).then(response => response.text()).then(data => {
-      //   if (data !== "true") {
-      //     setloading(false);
-      //     return;
-      //   }
       setToken(value ? value : "");
       setLogin(value ? true : false)
 
       setloading(false);
-      // })
     })
   }, [])
 

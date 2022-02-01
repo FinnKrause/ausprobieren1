@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Text, TouchableOpacity, Linking } from "react-native";
-import { VMStatus } from "./VmSeite";
+import { VMStatus } from "../Hub/Hub";
 import { SecoundBackground, ContrastColor, DarkerContrast, Schriftfarbe, PlaceHolderColor, SecoundContrast, SchriftAufSecoundContrast, DarkerSecoundContrast, SchriftAufKontrast } from "../Grundsachen/Colors";
 
 interface Props {
+    id: number,
     status: VMStatus;
     name: string;
     ViewURL: string;
     startURL: string;
+    setOnlineStatus: (ID: number, status: VMStatus) => void
 }
 
-const VM: React.FC<Props> = (Props): JSX.Element => {
+const Vm: React.FC<Props> = (Props): JSX.Element => {
 
     const styles = StyleSheet.create({
         All: {
@@ -56,8 +58,8 @@ const VM: React.FC<Props> = (Props): JSX.Element => {
 
     const start = () => {
         fetch(Props.startURL).then(value => value.text()).then(data => data)
+        Props.setOnlineStatus(Props.id, VMStatus.STARTING);
     }
-
 
     return (
         <View style={styles.All}>
@@ -66,16 +68,21 @@ const VM: React.FC<Props> = (Props): JSX.Element => {
             </View>
             <View style={styles.Bottom}>
 
-                {(Props.status.toString() === "NOTCHECKED") && <View style={styles.DownElements}>
+                {(Props.status === VMStatus.NOTCHECKED) && <View style={styles.DownElements}>
                     <Text style={styles.TextDown}>Loading...</Text>
                 </View>}
 
-                {(Props.status.toString() === "ONLINE") && <View style={[styles.DownElements, { flexDirection: "row" }]}>
+                {(Props.status === VMStatus.STARTING) && <View style={[styles.DownElements, { flexDirection: "row" }]}>
+                    <View style={{ backgroundColor: "purple", height: 20, width: 20, borderRadius: 10, marginRight: 10 }}></View>
+                    <Text style={styles.TextDown}>Starting...</Text>
+                </View>}
+
+                {(Props.status === VMStatus.ONLINE) && <View style={[styles.DownElements, { flexDirection: "row" }]}>
                     <View style={{ backgroundColor: "lightgreen", height: 20, width: 20, borderRadius: 10, marginRight: 10 }}></View>
                     <TouchableOpacity onPress={() => Linking.openURL(Props.ViewURL)}><Text style={styles.TextDown}>Launch in Browser</Text></TouchableOpacity>
                 </View>}
 
-                {(Props.status.toString() === "OFFLINE") && <View style={{ flexDirection: "row", height: "100%" }}>
+                {(Props.status === VMStatus.OFFLINE) && <View style={{ flexDirection: "row", height: "100%" }}>
                     <View style={[styles.DownElements, { borderRightWidth: 1, borderColor: PlaceHolderColor, flexDirection: "row", justifyContent: "center" }]}>
                         <View style={{ backgroundColor: "red", height: 20, width: 20, borderRadius: 10, marginRight: 10 }}></View>
                         <Text style={styles.TextDown}>offline</Text>
@@ -89,4 +96,4 @@ const VM: React.FC<Props> = (Props): JSX.Element => {
 }
 
 
-export default VM;
+export default Vm;
