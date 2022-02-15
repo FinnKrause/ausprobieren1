@@ -4,7 +4,6 @@ import LoginScreen from './components/LoginPage/LoginScreen';
 import Hub from "./components/Hub/Hub";
 import { BackgroundColor } from './components/Grundsachen/Colors';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BaseNavigationContainer } from "@react-navigation/native"
 
 interface Colors {
   BackgroundColor: string,

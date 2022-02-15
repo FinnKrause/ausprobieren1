@@ -4,6 +4,7 @@
     "slug": "adminpanel",
     "version": "1.0.0",
     "orientation": "portrait",
+    "icon": "./assets/splash1.png",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -16,7 +17,6 @@
     },
     "android": {
       "package": "com.finnkrause.adminpanel"
-      
     },
     "web": {},
     "description": ""

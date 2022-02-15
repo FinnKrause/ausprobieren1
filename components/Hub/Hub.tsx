@@ -6,6 +6,7 @@ import Kachel from "./Kachel";
 import ClickOnProfilePicture from "../Menu/ClickOnProfilePicture";
 import VmSeite from "../VMSeite/VmSeite";
 import ChoiceSite from "./ChoiceSite";
+import GeschichteSeite from "../Geschichte/GeschichteSeite";
 
 interface Props {
     removeLogin: () => void
@@ -31,6 +32,14 @@ interface VM {
     checkURL: string;
 }
 
+interface Lehrer {
+    Name: string;
+    InterviewTermin: string|undefined;
+    angefragt: boolean;
+    termin_fest: boolean;
+    abgedreht: boolean;
+}
+
 const StandardVMs = [
     { id: 1, name: "Windows 10", onlineStatus: VMStatus.NOTCHECKED, viewURL: "https://vm.finnkrause.com/?host=vm.finnkrause.com/mainvm&port=80&path=tightvnc", startURL: "https://start.finnkrause.com/mainvm", checkURL: "https://check.finnkrause.com/mainvm" },
     { id: 2, name: "Windows 11", onlineStatus: VMStatus.NOTCHECKED, viewURL: "https://vm.finnkrause.com/?host=vm.finnkrause.com/win11vm&path=tightvnc", startURL: "https://start.finnkrause.com/win11vm", checkURL: "https://check.finnkrause.com/win11vm" },
@@ -44,9 +53,11 @@ const Hub: React.FC<Props> = (Props): JSX.Element => {
 
     const [VMs, setVMs] = useState<VM[]>(StandardVMs)
 
+    const returnToHub = () => setTopLayer(undefined);
+
     const Kacheln: Kachel[] = [
         { text: "User Data", image: require("../../assets/data.png"), onClick: () => setTopLayer(<UserDataPage goBack={() => { setTopLayer(undefined) }} token={Props.token}></UserDataPage>) },
-        { text: "Geschichte Management", image: require("../../assets/brandenburger_tor.png"), onClick: () => { } },
+        { text: "Geschichte Management", image: require("../../assets/brandenburger_tor.png"), onClick: () => setTopLayer(<GeschichteSeite goHome={returnToHub}/>) },
         { text: "Admin Web Page", image: require("../../assets/admin.png"), onClick: () => { Linking.openURL("https://finnkrause.com/?Sprachentable=true&h=secret&p=jsonwebtoken4finn").catch(err => alert(err)) } },
         { text: "VMs", image: require("../../assets/VMs.png"), onClick: () => setTopLayer(<VmSeite setTopLayer={returnToHub} VMs={VMs} setVMs={(val: VM[]) => setVMs(val)} getIndex={getIndex}></VmSeite>) },
         { text: "DNS", image: require("../../assets/DNS.png"), onClick: () => { 
@@ -96,8 +107,6 @@ const Hub: React.FC<Props> = (Props): JSX.Element => {
         }
         return j;
     }
-
-    const returnToHub = () => setTopLayer(undefined);
 
     return (
         <View style={styles.HubWrapper}>
@@ -171,4 +180,4 @@ const styles = StyleSheet.create({
 });
 
 export default Hub;
-export { VM, VMStatus, StandardVMs }
+export { VM, VMStatus,Lehrer, StandardVMs }
