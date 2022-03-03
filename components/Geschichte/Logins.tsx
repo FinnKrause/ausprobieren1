@@ -1,38 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {Text, View, ScrollView, StyleSheet} from "react-native";
 import { Schriftfarbe } from "../Grundsachen/Colors";
+import UserLoginRow from "./UserLoginRow";
 
 interface Props {
+    userData:any;
+    setTopLayer: (newVal: JSX.Element|undefined) => void
+    setUserData: (newData:any) => void
+}
 
+interface IPData {
+    message?:string, 
+    ip: string, 
+    videoClicks?:number,
+    country: string,
+    regionName:string,
+    city: string, 
+    zip:string
+}
+
+interface UserData {
+    name: string, views: number, videoClicks?:number, statusPage: number, ViewIPs: Array<IPData>
 }
 
 const Logins:React.FC<Props> = (Props: Props):JSX.Element => {
-
-    const [userData, setUserData] = useState<Array<any> | undefined>(undefined)
-
-    useEffect(() => {
-        fetch("https://api.klasse10c.de/getUserData/app").then(res => res.json()).then((response) => {
-            if (!response) return;
-            setUserData(response)
-        })
-    }, [])
-
+    
     return (
         <View style={style.Container}>
             <Text style={[style.text, {fontSize: 40, padding: 20, marginTop: 100}]}>Logins</Text>
             <View style={style.column}>
                 <Text style={[style.columnItem, {borderWidth: 0}]}></Text>
-                <Text style={style.columnItem}>Main Seite aufgerufen</Text>
+                <Text style={style.columnItem}>Mainseite aufgerufen</Text>
                 <Text style={style.columnItem}>Statusseite aufgerufen</Text>
+                <Text style={style.columnItem}>Videobutton gedrückt</Text>
             </View>
-            {userData && userData.sort((a,b) => {
+            {Props.userData && Props.userData.sort((a:any,b:any) => {
                 if (a.views > b.views) return -1;
                 else return 1;
-            }).map((i, idx) => {
+            }).map((i:UserData, idx:number) => {
                 return <View key={idx} style={style.column}>
-                    <Text style={style.columnItem}>{i.name}</Text>
-                    <Text style={style.columnItem}>{i.views}</Text>
-                    <Text style={style.columnItem}>{i.statusPage}</Text>
+                    <UserLoginRow key={idx} i={i} setTopLayer={Props.setTopLayer}></UserLoginRow>
                 </View>
             })}
         </View>
@@ -41,12 +48,11 @@ const Logins:React.FC<Props> = (Props: Props):JSX.Element => {
 
 const style = StyleSheet.create({
     Container: {
-        width: "100%"
+        width: "100%",
     },
     text: {
         color: Schriftfarbe,
         textAlign: "center",
-
     },
     column: {
         width: "90%",
@@ -73,3 +79,4 @@ const style = StyleSheet.create({
 })
 
 export default Logins;
+export {UserData, IPData}

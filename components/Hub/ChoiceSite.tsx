@@ -1,6 +1,7 @@
 import React, { VoidFunctionComponent } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { BackgroundColor, ContrastColor, SchriftAufKontrast, Schriftfarbe, SecoundBackground } from "../Grundsachen/Colors";
+import Header from "../Grundsachen/Header";
 import ReturnButton from "../returnButton/returnButton";
 
 interface Choice {
@@ -17,10 +18,7 @@ interface Props {
 const ChoiceSite: React.FC<Props> = (Props): JSX.Element => {
     return (
         <View style={styles.Site}>
-            <ReturnButton isAbsolute onReturnButtonPress={Props.onReturn} customStyle={{ top: 13, zIndex: 10 }}></ReturnButton>
-            <View style={styles.top}>
-                <Text style={styles.Header}>{Props.title}</Text>
-            </View>
+            <Header title={Props.title} onReturn={Props.onReturn}></Header>
             <View style={{ marginTop: 40, alignItems: "center" }}>
                 {Props.Choices.map((i, idx) => (
                     <TouchableOpacity key={idx} style={styles.Option} onPress={i.onClick}>

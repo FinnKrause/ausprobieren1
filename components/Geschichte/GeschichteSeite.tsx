@@ -7,6 +7,7 @@ import { CheckBox } from "react-native-elements";
 import Svg, {Path, Rect, Circle} from "react-native-svg";
 import Logins from "./Logins";
 import Posts from "./Posts";
+import Logs from "./Logs";
 
 interface Props {
     goHome: () => void
@@ -16,19 +17,39 @@ const openLock = <Svg width="32" height="32" viewBox="0 0 24 24" stroke-width="1
 const closedLock = <Svg width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke={AlertColor} fill="none" stroke-linecap="round" stroke-linejoin="round"><Path stroke="none" d="M0 0h24v24H0z" fill="none"/><Rect x="5" y="11" width="14" height="10" rx="2" /><Circle cx="12" cy="16" r="1" /><Path d="M8 11v-4a4 4 0 0 1 8 0v4" /></Svg>
 
 const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
+
     const [tableData, setTableData] = useState<Lehrer[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [canUploadNew, setCanUploadNew] = useState<boolean>(true);
     const [locked, setLocked] = useState<boolean>(true);
 
+    const [userData, setUserData] = useState<Array<any> | undefined>(undefined)
+    const [posts, setPosts] = useState<Array<any> | undefined>(undefined)
+    const [logs, setLogs] = useState<Array<{date:string,message:string}>|undefined>(undefined);
+
+    const [topLayer, setTopLayer] = useState<JSX.Element|undefined>();
+
+
     const getData = () => {
         setLoading(true)
-        fetch("https://api.klasse10c.de/getTableData/finn").then(res => res.json()).then((response:Lehrer[]) => {
+        fetch("https://api.klasse10c.de/getTableData/app").then(res => res.json()).then((response:Lehrer[]) => {
             setTableData(response);
             setCanUploadNew(true);
             setLoading(false);
         }).catch(err => {
             setCanUploadNew(false);
+        })
+        fetch("https://api.klasse10c.de/getAllWaitingPosts/").then(res => res.json()).then((response) => {
+            if (!response || JSON.stringify(response) === "[]") return;
+            setPosts(response)
+        })
+        fetch("https://api.klasse10c.de/getUserData/app").then(res => res.json()).then((response) => {
+            if (!response) return;
+            setUserData(response)
+        })
+        fetch("https://api.klasse10c.de/getAllLogs/true").then(res => res.json()).then((response) => {
+            if (!response || response.error) return;
+            setLogs(response)
         })
     }
 
@@ -54,11 +75,16 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
 
     useEffect(() => {
         getData();
+        fetch("https://api.klasse10c.de/imon/app/true")
     }, [])
 
     return (
-        <View>
-            <View style={styles.controls}>
+        <View style={{height: "100%", width: "100%"}}>
+            {topLayer && <View style={{height: "100%", width: "100%"}}>
+                {topLayer}
+            </View>}
+
+            {<View style={styles.controls}>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginRight: 10}}>
                     <ReturnButton onReturnButtonPress={Props.goHome} isAbsolute={false}></ReturnButton>
                 </View>
@@ -67,9 +93,9 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                     <TouchableOpacity onPress={getData}><Image source={require("../../assets/refresh.jpg")} style={{height: 25, width: 25, marginRight: 20}}></Image></TouchableOpacity>
                     <TouchableOpacity onPress={() => setLocked(!locked)}>{locked ? closedLock : openLock}</TouchableOpacity>
                 </View>
-            </View>
+            </View>}
 
-            <ScrollView style={{marginTop: 30}} contentContainerStyle={{justifyContent: "center", alignItems: "center"}}>
+            {<ScrollView style={{marginTop: 30}} contentContainerStyle={{justifyContent: "center", alignItems: "center"}}>
                 <Text style={{fontSize: 40, padding: 20, color: Schriftfarbe}}>Interviews</Text>
                 <View style={[styles.column, {marginTop: 20}]}>
                     <Text style={[styles.columnItem, {borderWidth: 0}]}></Text>
@@ -105,9 +131,10 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                         }}/></View>
                     </View>
                 })}
-                <Logins></Logins>
-                <Posts locked={locked}></Posts>
-            </ScrollView>
+                <Logins userData={userData} setUserData={setUserData} setTopLayer={setTopLayer}></Logins>
+                <Logs logs={logs}></Logs>
+                <Posts locked={locked} posts={posts} setPosts={setPosts} reloadData={() => {getData()}}></Posts>
+            </ScrollView> }
         </View>
     );
 }
