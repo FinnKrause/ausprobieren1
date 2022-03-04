@@ -4,7 +4,7 @@ import { AlertColor, BackgroundColor, ContrastColor, DarkerContrast, Schriftfarb
 
 interface Props {
     locked: boolean;
-    posts: Array<any> | undefined;
+    posts: Array<any>;
     setPosts: (val: any) => void;
     reloadData: () => void
 }
@@ -13,8 +13,8 @@ const Posts:React.FC<Props> = (Props: Props):JSX.Element => {
 
     return (
         <View style={style.Container}>
-            {Props.posts && <Text style={[style.text, {fontSize: 40, padding: 20}]}>Auf der Warteliste</Text>}
-            {Props.posts && Props.posts.map((i:any, idx:number) => {
+            <Text style={[style.text, {fontSize: 40, padding: 20}]}>Auf der Warteliste</Text>
+            {Props.posts.map((i:any, idx:number) => {
                 return <View key={idx} style={style.Post}>
                     <Text style={[style.text, {fontSize: 20, padding: 20}]}>{i.Überschrift}</Text>
                     <Text style={[style.text, {paddingLeft: 20, paddingRight:20, marginBottom: 30}]}>{i.Beschreibung}</Text>

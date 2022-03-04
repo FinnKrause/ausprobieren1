@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Touchable, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { Schriftfarbe, SecoundBackground } from "../Grundsachen/Colors";
 
 interface Props {
@@ -13,7 +13,7 @@ const Logs:React.FC<Props> = (Props:Props):JSX.Element => {
         <View style={style.container}>
             <Text style={style.Header}>Logs</Text>
             {Props.logs && [...Props.logs].slice(0,lenght).map((i:{date:string, message:string}, idx:number) => 
-                <View style={style.row}>
+                <View style={style.row} key={idx}>
                     <Text style={[style.text, {fontWeight: "bold"}]}>{i.date}</Text>
                     <Text style={style.text}>{i.message.replace("\x1b[35m", "").replace("\x1b[0m","")}</Text>
                     <Text style={style.text}>{}</Text>
@@ -36,6 +36,7 @@ const style = StyleSheet.create({
         width: "90%",
         maxWidth: 700,
         marginTop: 40,
+        marginBottom: 20,
         borderRadius: 10,
         padding: 10,
         overflow: "hidden",

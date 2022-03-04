@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, TextInput} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AlertColor, ContrastColor, Schriftfarbe, SecoundBackground } from "../Grundsachen/Colors";
 import ReturnButton from "../returnButton/returnButton";
 import {Lehrer} from "../Hub/Hub";
@@ -19,7 +20,6 @@ const closedLock = <Svg width="32" height="32" viewBox="0 0 24 24" stroke-width=
 const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
 
     const [tableData, setTableData] = useState<Lehrer[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const [canUploadNew, setCanUploadNew] = useState<boolean>(true);
     const [locked, setLocked] = useState<boolean>(true);
 
@@ -30,26 +30,52 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
     const [topLayer, setTopLayer] = useState<JSX.Element|undefined>();
 
 
-    const getData = () => {
-        setLoading(true)
-        fetch("https://api.klasse10c.de/getTableData/app").then(res => res.json()).then((response:Lehrer[]) => {
+    const getData = (which:{tableData: boolean, WaitingPosts:boolean, userData:boolean,Logs:boolean}) => {
+        which.tableData && fetch("https://api.klasse10c.de/getTableData/app").then(res => res.json()).then((response:Lehrer[]) => {
+            AsyncStorage.setItem("TableData", JSON.stringify(response))
+            setCanUploadNew(true)
             setTableData(response);
-            setCanUploadNew(true);
-            setLoading(false);
         }).catch(err => {
-            setCanUploadNew(false);
+            setCanUploadNew(false)
+            AsyncStorage.getItem("TableData").then(value => {
+                setTableData(JSON.parse(value ?? "[]"))
+            })
         })
-        fetch("https://api.klasse10c.de/getAllWaitingPosts/").then(res => res.json()).then((response) => {
+        which.WaitingPosts && fetch("https://api.klasse10c.de/getAllWaitingPosts/").then(res => res.json()).then((response) => {
             if (!response || JSON.stringify(response) === "[]") return;
+            AsyncStorage.setItem("WaitingPosts", JSON.stringify(response))
+            setCanUploadNew(true)
             setPosts(response)
+        }).catch(err => {
+                setCanUploadNew(false)
+                AsyncStorage.getItem("WaitingPosts").then(value => {
+                if (!value) return;
+                setPosts(JSON.parse(value))
+            })
         })
-        fetch("https://api.klasse10c.de/getUserData/app").then(res => res.json()).then((response) => {
+        which.userData && fetch("https://api.klasse10c.de/getUserData/app").then(res => res.json()).then((response) => {
             if (!response) return;
+            AsyncStorage.setItem("UserData", JSON.stringify(response))
+            setCanUploadNew(true)
             setUserData(response)
+        }).catch(err => {
+                setCanUploadNew(false)
+                AsyncStorage.getItem("UserData").then(value => {
+                if (!value) return;
+                setUserData(JSON.parse(value))
+            })
         })
-        fetch("https://api.klasse10c.de/getAllLogs/true").then(res => res.json()).then((response) => {
+        which.Logs && fetch("https://api.klasse10c.de/getAllLogs/true").then(res => res.json()).then((response) => {
             if (!response || response.error) return;
+            AsyncStorage.setItem("Logs", JSON.stringify(response))
+            setCanUploadNew(true)
             setLogs(response)
+        }).catch(err => {
+                setCanUploadNew(false)
+                AsyncStorage.getItem("Logs").then(value => {
+                if (!value) return;
+                setLogs(JSON.parse(value))
+            })
         })
     }
 
@@ -74,7 +100,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
     }
 
     useEffect(() => {
-        getData();
+        getData({tableData: true, WaitingPosts: true, userData: true, Logs: true});
         fetch("https://api.klasse10c.de/imon/app/true")
     }, [])
 
@@ -87,11 +113,12 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
             {<View style={styles.controls}>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginRight: 10}}>
                     <ReturnButton onReturnButtonPress={Props.goHome} isAbsolute={false}></ReturnButton>
+                    {!canUploadNew && <Text style={{fontWeight: "bold", color: AlertColor}}>Offline Data</Text>}
                 </View>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginRight: 10}}>
                     {canUploadNew && !locked && <TouchableOpacity onPress={sendNewData}><Image source={require("../../assets/save.png")} style={{height: 27, aspectRatio: 17/11, marginRight: 20}}></Image></TouchableOpacity>}
-                    <TouchableOpacity onPress={getData}><Image source={require("../../assets/refresh.jpg")} style={{height: 25, width: 25, marginRight: 20}}></Image></TouchableOpacity>
-                    <TouchableOpacity onPress={() => setLocked(!locked)}>{locked ? closedLock : openLock}</TouchableOpacity>
+                    <TouchableOpacity onPress={()=>getData({tableData: true, WaitingPosts: true, userData: true, Logs: true})}><Image source={require("../../assets/refresh.jpg")} style={{height: 25, width: 25, marginRight: canUploadNew ? 20 : 0}}></Image></TouchableOpacity>
+                    {canUploadNew && <TouchableOpacity onPress={() => setLocked(!locked)}>{locked ? closedLock : openLock}</TouchableOpacity>}
                 </View>
             </View>}
 
@@ -103,7 +130,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                     <Text style={styles.columnItem}>Termin fest	</Text>
                     <Text style={styles.columnItem}>Abgedreht</Text>
                 </View>
-                {!loading && tableData.map((i, idx) => {
+                {tableData.map((i, idx) => {
                     return <View style={styles.column} key={idx}>
                         <TextInput style={styles.columnItem} multiline={true} defaultValue={i.Name} editable={!locked} onChangeText={(e) => {
                             if (locked) return;
@@ -132,8 +159,8 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                     </View>
                 })}
                 <Logins userData={userData} setUserData={setUserData} setTopLayer={setTopLayer}></Logins>
+                {posts && <Posts locked={locked} posts={posts} setPosts={setPosts} reloadData={() => {getData({Logs: true, WaitingPosts: true, tableData: false, userData: false})}}/>}
                 <Logs logs={logs}></Logs>
-                <Posts locked={locked} posts={posts} setPosts={setPosts} reloadData={() => {getData()}}></Posts>
             </ScrollView> }
         </View>
     );
