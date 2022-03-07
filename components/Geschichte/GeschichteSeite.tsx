@@ -144,7 +144,6 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                             data[idx].angefragt = !data[idx].angefragt;
                             setTableData(data);
                         }}></CheckBox></View>
-
                         <TextInput style={styles.columnItem} multiline={true} defaultValue={i.InterviewTermin} editable={!locked} onChangeText={(e) => {
                             const data = [...tableData];
                             data[idx].InterviewTermin = e;

@@ -19,7 +19,7 @@ const ChoiceSite: React.FC<Props> = (Props): JSX.Element => {
     return (
         <View style={styles.Site}>
             <Header title={Props.title} onReturn={Props.onReturn}></Header>
-            <View style={{ marginTop: 40, alignItems: "center" }}>
+            <View style={{ marginTop: 40, alignItems: "center"}}>
                 {Props.Choices.map((i, idx) => (
                     <TouchableOpacity key={idx} style={styles.Option} onPress={i.onClick}>
                         <Text style={styles.OptionText}>{i.title}</Text>
