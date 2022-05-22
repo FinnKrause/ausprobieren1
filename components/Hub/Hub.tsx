@@ -46,7 +46,7 @@ const StandardVMs = [
     { id: 3, name: "Kali Linux", onlineStatus: VMStatus.NOTCHECKED, viewURL: "https://vm.finnkrause.com/?host=vm.finnkrause.com/kalivm8&port=80", startURL: "https://check.finnkrause.com/kalivm", checkURL: "https://vm.finnkrause.com/?host=vm.finnkrause.com/kalivm8&port=80" },
 ]
 
-const Hub: React.FC<Props> = (Props): JSX.Element => {
+const Hub: React.FC<Props> = (Props:Props): JSX.Element => {
 
     const [topLayer, setTopLayer] = useState<JSX.Element | undefined>();
     const [ProfilePictureClicked, setProfilePictureClicked] = useState<boolean>();

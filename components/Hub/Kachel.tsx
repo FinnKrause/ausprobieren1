@@ -9,7 +9,7 @@ interface Props {
     onClick: () => void;
 }
 
-const Kachel: React.FC<Props> = (Props): JSX.Element => {
+const Kachel: React.FC<Props> = (Props:Props): JSX.Element => {
     return (
         <View style={styles.KachelBody}>
             <View style={styles.top}>

@@ -12,13 +12,15 @@ interface Props {
     returnToHub: () => void;
 }
 
+type Stadt = {text: {city: string, country:  string}, amount: number}
+
 const Details:React.FC<Props> = (Props:Props):JSX.Element => {
 
     const [searchquerie, setSearchQuerie] = useState<string|null>(null);
     const [summary, setSummary] = useState<boolean>(true);
 
-    const getStädte = (Array: IPData[]):Array<{text: {city: string, country:  string}, amount: number}> => {
-        const newArr:Array<{text: {city: string, country:  string}, amount: number}> = []
+    const getStädte = (Array: IPData[]):Array<Stadt> => {
+        const newArr:Array<Stadt> = []
         for (const data of Array) {
             const toStoreValue = {city: data.city, country: data.country};
             let index = null;
@@ -55,7 +57,6 @@ const Details:React.FC<Props> = (Props:Props):JSX.Element => {
                     </View>
                 </View>}
                 {!searchquerie && Props.i.ViewIPs.map((i, idx) => <IP data={i} key={idx}></IP>)}
-
                 {searchquerie && Props.i.ViewIPs.filter(a => {
                     if (!searchquerie) return true;
                     return a.city.toLowerCase().includes(searchquerie) || a.country.toLowerCase().includes(searchquerie) || a.ip.toLowerCase().includes(searchquerie) || a.regionName.toLowerCase().includes(searchquerie)

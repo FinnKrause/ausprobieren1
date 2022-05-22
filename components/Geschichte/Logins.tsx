@@ -30,9 +30,9 @@ const Logins:React.FC<Props> = (Props: Props):JSX.Element => {
             <Text style={[style.text, {fontSize: 40, padding: 20, marginTop: 100}]}>Logins</Text>
             <View style={style.column}>
                 <Text style={[style.columnItem, {borderWidth: 0}]}></Text>
-                <Text style={style.columnItem}>Mainseite aufgerufen</Text>
-                <Text style={style.columnItem}>Statusseite aufgerufen</Text>
-                <Text style={style.columnItem}>Videobutton gedrückt</Text>
+                <View style={style.columnItem}><Text style={{color: Schriftfarbe}}>Mainseite aufgerufen</Text></View>
+                <View style={style.columnItem}><Text style={{color: Schriftfarbe}}>Statusseite aufgerufen</Text></View>
+                <View style={style.columnItem}><Text style={{color: Schriftfarbe}}>Videobutton gedrückt</Text></View>
             </View>
             {Props.userData && Props.userData.sort((a:any,b:any) => {
                 if (a.views > b.views) return -1;
@@ -68,13 +68,14 @@ const style = StyleSheet.create({
     columnItem: {
         flex: 1,
         color: Schriftfarbe,
-        borderColor: "white",
-        height: "100%",
-        textAlign: "center",
-        textAlignVertical: "center",
+        borderColor: "gray",
         borderWidth: 1,
+        height: "100%",
+        
+
+        display: "flex",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center",        
     },
 })
 

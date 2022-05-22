@@ -31,10 +31,10 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
 
 
     const getData = (which:{tableData: boolean, WaitingPosts:boolean, userData:boolean,Logs:boolean}) => {
-        which.tableData && fetch("https://api.klasse10c.de/getTableData/app").then(res => res.json()).then((response:Lehrer[]) => {
+        which.tableData && fetch("https://api.klasse10c.de/getTableData/app").then(res => res.json()).then((response:{data: Lehrer[]}) => {
             AsyncStorage.setItem("TableData", JSON.stringify(response))
             setCanUploadNew(true)
-            setTableData(response);
+            setTableData(response.data);
         }).catch(err => {
             setCanUploadNew(false)
             AsyncStorage.getItem("TableData").then(value => {
@@ -42,8 +42,8 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
             })
         })
         which.WaitingPosts && fetch("https://api.klasse10c.de/getAllWaitingPosts/").then(res => res.json()).then((response) => {
-            if (!response || JSON.stringify(response) === "[]") return;
-            AsyncStorage.setItem("WaitingPosts", JSON.stringify(response))
+            if (!response || JSON.stringify(response.data) === "[]") return;
+            AsyncStorage.setItem("WaitingPosts", JSON.stringify(response.data))
             setCanUploadNew(true)
             setPosts(response)
         }).catch(err => {
@@ -55,9 +55,9 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
         })
         which.userData && fetch("https://api.klasse10c.de/getUserData/app").then(res => res.json()).then((response) => {
             if (!response) return;
-            AsyncStorage.setItem("UserData", JSON.stringify(response))
+            AsyncStorage.setItem("UserData", JSON.stringify(response.data))
             setCanUploadNew(true)
-            setUserData(response)
+            setUserData(response.data)
         }).catch(err => {
                 setCanUploadNew(false)
                 AsyncStorage.getItem("UserData").then(value => {
@@ -66,10 +66,10 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
             })
         })
         which.Logs && fetch("https://api.klasse10c.de/getAllLogs/true").then(res => res.json()).then((response) => {
-            if (!response || response.error) return;
-            AsyncStorage.setItem("Logs", JSON.stringify(response))
+            if (!response) return;
+            AsyncStorage.setItem("Logs", JSON.stringify(response.data))
             setCanUploadNew(true)
-            setLogs(response)
+            setLogs(response.data)
         }).catch(err => {
                 setCanUploadNew(false)
                 AsyncStorage.getItem("Logs").then(value => {
@@ -125,30 +125,34 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
             {<ScrollView style={{marginTop: 30}} contentContainerStyle={{justifyContent: "center", alignItems: "center"}}>
                 <Text style={{fontSize: 40, padding: 20, color: Schriftfarbe}}>Interviews</Text>
                 <View style={[styles.column, {marginTop: 20}]}>
-                    <Text style={[styles.columnItem, {borderWidth: 0}]}></Text>
-                    <Text style={styles.columnItem}>Angefragt</Text>
-                    <Text style={styles.columnItem}>Termin fest	</Text>
-                    <Text style={styles.columnItem}>Abgedreht</Text>
+                    <View style={[styles.columnItem, {borderWidth: 0}]}><Text></Text></View>
+                    <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Angefragt</Text></View>
+                    <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Termin fest	</Text></View>
+                    <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Abgedreht</Text></View>
                 </View>
                 {tableData.map((i, idx) => {
                     return <View style={styles.column} key={idx}>
-                        <TextInput style={styles.columnItem} multiline={true} defaultValue={i.Name} editable={!locked} onChangeText={(e) => {
-                            if (locked) return;
-                            const data = [...tableData];
-                            data[idx].Name = e;
-                            setTableData(data);
-                        }}/>
+                        <View style={styles.columnItem}>
+                            <TextInput style={{color: Schriftfarbe}} multiline={true} defaultValue={i.Name} editable={!locked} onChangeText={(e) => {
+                                if (locked) return;
+                                const data = [...tableData];
+                                data[idx].Name = e;
+                                setTableData(data);
+                            }}/>
+                        </View>
                         <View style={styles.columnItem}><CheckBox checkedColor={ContrastColor} checked={i.angefragt} onPress={() => {
                             if (locked) return;
                             const data = [...tableData];
                             data[idx].angefragt = !data[idx].angefragt;
                             setTableData(data);
                         }}></CheckBox></View>
-                        <TextInput style={styles.columnItem} multiline={true} defaultValue={i.InterviewTermin} editable={!locked} onChangeText={(e) => {
-                            const data = [...tableData];
-                            data[idx].InterviewTermin = e;
-                            setTableData(data);
-                        }}/>
+                        <View style={styles.columnItem}>
+                            <TextInput style={{color: Schriftfarbe}} multiline={true} defaultValue={i.InterviewTermin} editable={!locked} onChangeText={(e) => {
+                                const data = [...tableData];
+                                data[idx].InterviewTermin = e;
+                                setTableData(data);
+                            }}/>
+                        </View>
                         <View style={styles.columnItem}><CheckBox checkedColor={ContrastColor} checked={i.abgedreht} onPress={() => {
                             if (locked) return;
                             const data = [...tableData];
@@ -206,13 +210,14 @@ const styles = StyleSheet.create({
     columnItem: {
         flex: 1,
         color: Schriftfarbe,
-        borderColor: "white",
-        height: "100%",
-        textAlign: "center",
-        textAlignVertical: "center",
+        borderColor: "gray",
         borderWidth: 1,
+        height: "100%",
+        
+
+        display: "flex",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center",        
     },
 
 })
