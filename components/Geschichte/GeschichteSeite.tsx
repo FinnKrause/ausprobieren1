@@ -9,6 +9,7 @@ import Svg, {Path, Rect, Circle} from "react-native-svg";
 import Logins from "./Logins";
 import Posts from "./Posts";
 import Logs from "./Logs";
+import BerlinTour from "./BerlinTour";
 
 interface Props {
     goHome: () => void
@@ -163,6 +164,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                 })}
                 <Logins userData={userData} setUserData={setUserData} setTopLayer={setTopLayer}></Logins>
                 {posts && <Posts locked={locked} posts={posts} setPosts={setPosts} reloadData={() => {getData({Logs: true, WaitingPosts: true, tableData: false, userData: false})}}/>}
+                <BerlinTour></BerlinTour>
                 <Logs logs={logs}></Logs>
             </ScrollView> }
         </View>

@@ -10,10 +10,10 @@ interface Props {
 
 const Header:React.FC<Props> =(Props:Props):JSX.Element => {
     return (
-            <View style={styles.top}>
-                <ReturnButton isAbsolute={false} onReturnButtonPress={Props.onReturn}></ReturnButton>
-                <Text style={styles.Header}>{Props.title}</Text>
-            </View>
+        <View style={styles.top}>
+            <ReturnButton isAbsolute={false} onReturnButtonPress={Props.onReturn}></ReturnButton>
+            <Text style={styles.Header}>{Props.title}</Text>
+        </View>
     );
 }
 
