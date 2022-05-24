@@ -27,11 +27,12 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
     const [userData, setUserData] = useState<Array<any> | undefined>(undefined)
     const [posts, setPosts] = useState<Array<any> | undefined>(undefined)
     const [logs, setLogs] = useState<Array<{date:string,message:string}>|undefined>(undefined);
+    const [BerlinTour, setBerlinTour] = useState<Array<{date: string, header: string, content: string}|undefined>>();
 
     const [topLayer, setTopLayer] = useState<JSX.Element|undefined>();
 
 
-    const getData = (which:{tableData: boolean, WaitingPosts:boolean, userData:boolean,Logs:boolean}) => {
+    const getData = (which:{tableData?: boolean, WaitingPosts?:boolean, userData?:boolean,Logs?:boolean, BerlinTour?:boolean}) => {
         which.tableData && fetch("https://api.klasse10c.de/getTableData/app").then(res => res.json()).then((response:{data: Lehrer[]}) => {
             AsyncStorage.setItem("TableData", JSON.stringify(response))
             setCanUploadNew(true)
@@ -78,6 +79,17 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                 setLogs(JSON.parse(value))
             })
         })
+
+        which.BerlinTour && fetch("https://api.klasse10c.de/getBerlinTour/app").then(res => res.json()).then(response => {
+            if (!response) return;
+            AsyncStorage.setItem("BerlinTour", JSON.stringify(response.data));
+            setBerlinTour(response.data)
+        }).catch(err => {
+            AsyncStorage.getItem("BerlinTour").then(value => {
+                if (!value) return;
+                setBerlinTour(JSON.parse(value))
+            })
+        })
     }
 
     const sendNewData = () => {
@@ -101,7 +113,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
     }
 
     useEffect(() => {
-        getData({tableData: true, WaitingPosts: true, userData: true, Logs: true});
+        getData({tableData: true, WaitingPosts: true, userData: true, Logs: true, BerlinTour: true});
         fetch("https://api.klasse10c.de/imon/app/true")
     }, [])
 
@@ -131,7 +143,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                     <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Termin fest	</Text></View>
                     <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Abgedreht</Text></View>
                 </View>
-                {tableData.map((i, idx) => {
+                {tableData?.map((i, idx) => {
                     return <View style={styles.column} key={idx}>
                         <View style={styles.columnItem}>
                             <TextInput style={{color: Schriftfarbe}} multiline={true} defaultValue={i.Name} editable={!locked} onChangeText={(e) => {

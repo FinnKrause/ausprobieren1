@@ -20,7 +20,7 @@
     "expo-updates": "^0.13.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-native": "0.64.3",
+    "react-native": "0.68.2",
     "react-native-asyncstorage": "^1.0.0",
     "react-native-check-box": "^2.1.7",
     "react-native-elements": "^3.4.2",
