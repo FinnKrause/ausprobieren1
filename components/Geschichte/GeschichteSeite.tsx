@@ -27,7 +27,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
     const [userData, setUserData] = useState<Array<any> | undefined>(undefined)
     const [posts, setPosts] = useState<Array<any> | undefined>(undefined)
     const [logs, setLogs] = useState<Array<{date:string,message:string}>|undefined>(undefined);
-    const [BerlinTour, setBerlinTour] = useState<Array<{date: string, header: string, content: string}|undefined>>();
+    const [BerlinTourData, setBerlinTourData] = useState<Array<{date: string, header: string, content: string}>>();
 
     const [topLayer, setTopLayer] = useState<JSX.Element|undefined>();
 
@@ -83,33 +83,51 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
         which.BerlinTour && fetch("https://api.klasse10c.de/getBerlinTour/app").then(res => res.json()).then(response => {
             if (!response) return;
             AsyncStorage.setItem("BerlinTour", JSON.stringify(response.data));
-            setBerlinTour(response.data)
-        }).catch(err => {
+            setCanUploadNew(true)
+            setBerlinTourData(response.data)
+        }).catch(_ => {
+            setCanUploadNew(false)
             AsyncStorage.getItem("BerlinTour").then(value => {
                 if (!value) return;
-                setBerlinTour(JSON.parse(value))
+                setBerlinTourData(JSON.parse(value))
             })
         })
     }
 
-    const sendNewData = () => {
+    const sendNewData = (which: {tableData?: boolean, berlinTour?: boolean}) => {
         if (locked) {
             alert("Unlock the site to publish new information!")
             return;
         }
-        fetch("https://api.klasse10c.de/setTableData/app", {
-            method: 'POST',
-            headers : {
-                'Accept' : 'application/json',
-                'Content-Type' : 'application/json',
-            },
-            body: JSON.stringify(tableData),
-        }).then(res => res.text()).then(res => {
-            if (res === "DONE") {alert("Tabelle erfolgreich geupdated!"); setCanUploadNew(true)}
-            else {alert("Tabelle konnte nicht geupdatet werden!");  setCanUploadNew(false)}
-        }).catch(err => {
-            setCanUploadNew(false)
-        })
+
+        const doAPIUpdateRequest = (urlToPost: string, data: any, name:string) => {
+            fetch(urlToPost, {
+                method: 'POST',
+                headers : {
+                    'Accept' : 'application/json',
+                    'Content-Type' : 'application/json',
+                },
+                body: JSON.stringify(data),
+            }).then(res => res.json()).then(res => {
+                if (res.success) {alert(`${name} updated!`); setCanUploadNew(true)}
+                else {alert(`Error while updating ${name}!`);  setCanUploadNew(false)}
+            }).catch(err => {
+                setCanUploadNew(false)
+            })
+        } 
+
+        which.tableData && doAPIUpdateRequest("https://api.klasse10c.de/setTableData/app", tableData, "Tabelle")
+
+        if (which.berlinTour) {
+            if (BerlinTourData?.filter(i => i.date&&i.header&&i.content).length == BerlinTourData?.length) {
+                which.berlinTour && doAPIUpdateRequest("https://api.klasse10c.de/setBerlinTour/app", BerlinTourData, "BerlinTour")
+            }
+            else {
+                alert("Ein Eintrag für die Berlintour ist noch nicht vollständig ausgefüllt!")
+            }
+        }
+
+
     }
 
     useEffect(() => {
@@ -129,7 +147,6 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                     {!canUploadNew && <Text style={{fontWeight: "bold", color: AlertColor}}>Offline Data</Text>}
                 </View>
                 <View style={{flexDirection: "row", justifyContent: "center", alignItems: "center", marginRight: 10}}>
-                    {canUploadNew && !locked && <TouchableOpacity onPress={sendNewData}><Image source={require("../../assets/save.png")} style={{height: 27, aspectRatio: 17/11, marginRight: 20}}></Image></TouchableOpacity>}
                     <TouchableOpacity onPress={()=>getData({tableData: true, WaitingPosts: true, userData: true, Logs: true})}><Image source={require("../../assets/refresh.jpg")} style={{height: 25, width: 25, marginRight: canUploadNew ? 20 : 0}}></Image></TouchableOpacity>
                     {canUploadNew && <TouchableOpacity onPress={() => setLocked(!locked)}>{locked ? closedLock : openLock}</TouchableOpacity>}
                 </View>
@@ -138,7 +155,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
             {<ScrollView style={{marginTop: 30}} contentContainerStyle={{justifyContent: "center", alignItems: "center"}}>
                 <Text style={{fontSize: 40, padding: 20, color: Schriftfarbe}}>Interviews</Text>
                 <View style={[styles.column, {marginTop: 20}]}>
-                    <View style={[styles.columnItem, {borderWidth: 0}]}><Text></Text></View>
+                    <View style={[styles.columnItem, (canUploadNew && !locked) ? {} : {borderWidth: 0}]} >{canUploadNew && !locked && <TouchableOpacity onPress={() => sendNewData({tableData: true})}><Image source={require("../../assets/save.png")} style={{height: 27, aspectRatio: 17/11}}></Image></TouchableOpacity>}</View>
                     <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Angefragt</Text></View>
                     <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Termin fest	</Text></View>
                     <View style={styles.columnItem}><Text style={{color: Schriftfarbe}}>Abgedreht</Text></View>
@@ -176,7 +193,7 @@ const GeschichteSeite:React.FC<Props> = (Props: Props):JSX.Element => {
                 })}
                 <Logins userData={userData} setUserData={setUserData} setTopLayer={setTopLayer}></Logins>
                 {posts && <Posts locked={locked} posts={posts} setPosts={setPosts} reloadData={() => {getData({Logs: true, WaitingPosts: true, tableData: false, userData: false})}}/>}
-                <BerlinTour></BerlinTour>
+                {BerlinTourData && <BerlinTour data={BerlinTourData} setData={setBerlinTourData} locked={locked} sendNewData={sendNewData} canUploadNew={canUploadNew}/>}
                 <Logs logs={logs}></Logs>
             </ScrollView> }
         </View>
